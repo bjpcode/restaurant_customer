@@ -1,0 +1,317 @@
+/* Responsive Design System */
+
+/* Breakpoints */
+:root {
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+}
+
+/* Container Queries */
+.container-sm { max-width: var(--breakpoint-sm); }
+.container-md { max-width: var(--breakpoint-md); }
+.container-lg { max-width: var(--breakpoint-lg); }
+.container-xl { max-width: var(--breakpoint-xl); }
+
+/* Mobile First Media Queries */
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+  .btn-group-sm .btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+  
+  .grid-sm-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  :root {
+    --font-size-base: 18px;
+    --spacing-md: 20px;
+    --spacing-lg: 28px;
+  }
+
+  .container {
+    padding: 0 var(--spacing-lg);
+  }
+
+  .btn-lg {
+    min-height: 56px;
+    padding: var(--spacing-md) var(--spacing-xl);
+  }
+
+  .grid-md-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+  }
+
+  .grid-md-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-lg);
+  }
+
+  /* Tablet-specific menu layout */
+  .menu-grid-tablet {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+  }
+
+  /* Larger touch targets for tablets */
+  .touch-target {
+    min-height: 48px;
+    min-width: 48px;
+  }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  .grid-lg-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-lg);
+  }
+
+  .grid-lg-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-lg);
+  }
+
+  /* Desktop menu layout */
+  .menu-grid-desktop {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-lg);
+  }
+
+  /* Hover effects for desktop */
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+
+  .grid-xl-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-xl);
+  }
+
+  .grid-xl-5 {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--spacing-xl);
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .hover-lift:hover {
+    transform: none;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Larger touch targets */
+  .btn,
+  .touch-target {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  /* Increase spacing on touch devices */
+  .touch-spacing {
+    margin: var(--spacing-md);
+  }
+}
+
+/* High DPI Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Sharper icons and images */
+  .icon {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Orientation Specific Styles */
+@media (orientation: landscape) and (max-height: 500px) {
+  /* Landscape mobile optimization */
+  .header-mobile {
+    height: 60px;
+  }
+
+  .modal-mobile {
+    max-height: 90vh;
+  }
+}
+
+@media (orientation: portrait) {
+  /* Portrait specific optimizations */
+  .menu-grid-portrait {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Safe Area Support for iOS */
+@supports (padding: env(safe-area-inset-top)) {
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-area-left {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .safe-area-right {
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .safe-area-inset {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: #1a1a1a;
+    --surface-color: #2d2d2d;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --text-light: #808080;
+    --border-color: #404040;
+  }
+
+  .card {
+    background: var(--surface-color);
+    border-color: var(--border-color);
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  :root {
+    --primary-color: #0066cc;
+    --text-primary: #000000;
+    --background-color: #ffffff;
+    --border-color: #000000;
+  }
+
+  .btn-primary {
+    border: 2px solid var(--text-primary);
+  }
+
+  .card {
+    border: 2px solid var(--border-color);
+  }
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .card {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+
+  .btn {
+    background: none;
+    color: #000;
+    border: 1px solid #000;
+  }
+}
+
+/* Utility Classes for Responsive Design */
+.hide-sm { display: none; }
+.hide-md { display: block; }
+.hide-lg { display: block; }
+
+@media (min-width: 768px) {
+  .hide-sm { display: block; }
+  .hide-md { display: none; }
+  .show-md { display: block; }
+}
+
+@media (min-width: 1024px) {
+  .hide-md { display: block; }
+  .hide-lg { display: none; }
+  .show-lg { display: block; }
+}
+
+/* Flexible Grid System */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 calc(-1 * var(--spacing-md) / 2);
+}
+
+.col {
+  flex: 1;
+  padding: 0 calc(var(--spacing-md) / 2);
+}
+
+.col-auto {
+  flex: 0 0 auto;
+}
+
+.col-6 { flex: 0 0 50%; }
+.col-4 { flex: 0 0 33.333333%; }
+.col-3 { flex: 0 0 25%; }
+
+/* Mobile Navigation */
+.mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--surface-color);
+  border-top: 1px solid var(--border-color);
+  padding: var(--spacing-sm) var(--spacing-md);
+  display: flex;
+  justify-content: space-around;
+  z-index: 30;
+}
+
+@media (min-width: 768px) {
+  .mobile-nav {
+    display: none;
+  }
+}
