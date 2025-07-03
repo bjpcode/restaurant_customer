@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, ShoppingCart, X, Menu as MenuIcon, Wifi, WifiOff } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
@@ -128,28 +128,28 @@ const MenuContainer = () => {
     };
   }, [updateActivity]);
 
-  const handleSearchToggle = () => {
+  const handleSearchToggle = useCallback(() => {
     setShowSearch(!showSearch);
     if (showSearch) {
       setLocalSearchQuery('');
       searchMenu('');
     }
-  };
+  }, [showSearch, searchMenu]);
 
-  const handleClearFilters = () => {
+  const handleClearFilters = useCallback(() => {
     setLocalSearchQuery('');
     clearFilters();
     setShowSearch(false);
-  };
+  }, [clearFilters]);
 
-  const handleCategoryChange = (category) => {
+  const handleCategoryChange = useCallback((category) => {
     filterByCategory(category);
     // Clear search when changing categories
     if (searchQuery) {
       setLocalSearchQuery('');
       searchMenu('');
     }
-  };
+  }, [filterByCategory, searchQuery, searchMenu]);
 
   if (error) {
     return (
@@ -178,7 +178,7 @@ const MenuContainer = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background-color">
+    <div className="mobile-scroll-container bg-background-color">
       {/* Sticky Header */}
       <div className="sticky top-0 z-40 bg-surface-color shadow-sm safe-area-top">
         <div className="container mx-auto">
@@ -282,7 +282,7 @@ const MenuContainer = () => {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 pb-20">
+      <div className="container mx-auto px-4 pb-20 menu-content">
         {/* Active Filters */}
         {(searchQuery || selectedCategory !== 'all') && (
           <motion.div

@@ -1,19 +1,20 @@
-import React, { useMemo, useState, useCallback, useRef, useEffect } from 'react';
-import { FixedSizeList as List } from 'react-window';
+import React, { useMemo, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RefreshCw } from 'lucide-react';
 import MenuItem from './MenuItem';
 import LoadingStates from './LoadingStates';
-import { useApp } from '../contexts/AppContext';
-
-const ITEM_HEIGHT = 120; // Height of each menu item
-const ITEMS_PER_ROW = 1; // Mobile-first: 1 item per row
 
 const MenuGrid = ({ menuItems = [], loading, onRefresh }) => {
-  const { isMobile } = useApp();
   const [refreshing, setRefreshing] = useState(false);
-  const [visibleRange, setVisibleRange] = useState({ start: 0, end: 10 });
-  const containerRef = useRef(null);
+
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await onRefresh();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [onRefresh]);
 
   // Group items by category for better organization
   const groupedItems = useMemo(() => {
@@ -74,57 +75,6 @@ const MenuGrid = ({ menuItems = [], loading, onRefresh }) => {
     return flattened;
   }, [groupedItems]);
 
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    try {
-      await onRefresh();
-    } finally {
-      setRefreshing(false);
-    }
-  };
-
-  // Update visible range for performance optimization
-  const handleItemsRendered = useCallback(({ visibleStartIndex, visibleStopIndex }) => {
-    setVisibleRange({ start: visibleStartIndex, end: visibleStopIndex });
-  }, []);
-
-  // Row renderer for virtual scrolling
-  const renderRow = useCallback(({ index, style }) => {
-    const item = flattenedItems[index];
-    
-    if (!item) return null;
-
-    if (item.type === 'header') {
-      return (
-        <div style={style}>
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.05 }}
-            className="sticky top-0 z-10 bg-background-color py-4 px-4"
-          >
-            <h2 className="text-xl font-bold text-text-primary border-b border-border-color pb-2">
-              {item.title}
-            </h2>
-          </motion.div>
-        </div>
-      );
-    }
-
-    return (
-      <div style={style}>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.05 }}
-          className="px-4 py-2"
-        >
-          <MenuItem item={item} />
-        </motion.div>
-      </div>
-    );
-  }, [flattenedItems]);
-
   // Loading state
   if (loading) {
     return (
@@ -166,57 +116,40 @@ const MenuGrid = ({ menuItems = [], loading, onRefresh }) => {
     );
   }
 
-  // For mobile, use simple scrolling instead of virtualization for better performance
-  if (isMobile && flattenedItems.length < 50) {
-    return (
-      <div className="space-y-2">
-        <AnimatePresence>
-          {flattenedItems.map((item, index) => {
-            if (item.type === 'header') {
-              return (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  className="sticky top-0 z-10 bg-background-color py-4 px-4"
-                >
-                  <h2 className="text-xl font-bold text-text-primary border-b border-border-color pb-2">
-                    {item.title}
-                  </h2>
-                </motion.div>
-              );
-            }
-
+  // Always use simple scrolling for better mobile compatibility
+  return (
+    <div className="space-y-2 scroll-optimized">
+      <AnimatePresence>
+        {flattenedItems.map((item, index) => {
+          if (item.type === 'header') {
             return (
               <motion.div
                 key={item.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className="px-4 py-2"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: Math.min(index * 0.02, 0.5) }}
+                className="sticky top-0 z-10 bg-background-color py-4 px-4"
               >
-                <MenuItem item={item} />
+                <h2 className="text-xl font-bold text-text-primary border-b border-border-color pb-2">
+                  {item.title}
+                </h2>
               </motion.div>
             );
-          })}
-        </AnimatePresence>
-      </div>
-    );
-  }
+          }
 
-  // Virtual scrolling for large lists
-  return (
-    <div ref={containerRef} className="h-screen">
-      <List
-        height={window.innerHeight - 200} // Account for header and padding
-        itemCount={flattenedItems.length}
-        itemSize={ITEM_HEIGHT}
-        onItemsRendered={handleItemsRendered}
-        overscanCount={5}
-      >
-        {renderRow}
-      </List>
+          return (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: Math.min(index * 0.02, 0.5) }}
+              className="px-4 py-2"
+            >
+              <MenuItem item={item} />
+            </motion.div>
+          );
+        })}
+      </AnimatePresence>
     </div>
   );
 };

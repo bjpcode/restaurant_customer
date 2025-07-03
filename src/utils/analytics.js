@@ -6,33 +6,39 @@ export const performanceMonitor = {
   trackWebVitals() {
     if (typeof window === 'undefined') return;
     
-    // Largest Contentful Paint (LCP)
-    new PerformanceObserver((entryList) => {
-      const entries = entryList.getEntries();
-      const lastEntry = entries[entries.length - 1];
-      
-      this.reportMetric('LCP', lastEntry.startTime);
-    }).observe({ entryTypes: ['largest-contentful-paint'] });
-    
-    // First Input Delay (FID)
-    new PerformanceObserver((entryList) => {
-      const entries = entryList.getEntries();
-      entries.forEach((entry) => {
-        this.reportMetric('FID', entry.processingStart - entry.startTime);
-      });
-    }).observe({ entryTypes: ['first-input'] });
-    
-    // Cumulative Layout Shift (CLS)
-    let clsValue = 0;
-    new PerformanceObserver((entryList) => {
-      const entries = entryList.getEntries();
-      entries.forEach((entry) => {
-        if (!entry.hadRecentInput) {
-          clsValue += entry.value;
-        }
-      });
-      this.reportMetric('CLS', clsValue);
-    }).observe({ entryTypes: ['layout-shift'] });
+    try {
+      // Largest Contentful Paint (LCP)
+      if ('PerformanceObserver' in window) {
+        new PerformanceObserver((entryList) => {
+          const entries = entryList.getEntries();
+          const lastEntry = entries[entries.length - 1];
+          
+          this.reportMetric('LCP', lastEntry.startTime);
+        }).observe({ entryTypes: ['largest-contentful-paint'] });
+        
+        // First Input Delay (FID)
+        new PerformanceObserver((entryList) => {
+          const entries = entryList.getEntries();
+          entries.forEach((entry) => {
+            this.reportMetric('FID', entry.processingStart - entry.startTime);
+          });
+        }).observe({ entryTypes: ['first-input'] });
+        
+        // Cumulative Layout Shift (CLS)
+        let clsValue = 0;
+        new PerformanceObserver((entryList) => {
+          const entries = entryList.getEntries();
+          entries.forEach((entry) => {
+            if (!entry.hadRecentInput) {
+              clsValue += entry.value;
+            }
+          });
+          this.reportMetric('CLS', clsValue);
+        }).observe({ entryTypes: ['layout-shift'] });
+      }
+    } catch (error) {
+      console.warn('Web Vitals tracking failed:', error);
+    }
   },
   
   // Track custom metrics
@@ -184,7 +190,7 @@ export const userTracker = {
   getSessionId() {
     let sessionId = sessionStorage.getItem('analytics_session_id');
     if (!sessionId) {
-      sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      sessionId = `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
       sessionStorage.setItem('analytics_session_id', sessionId);
     }
     return sessionId;
@@ -193,7 +199,7 @@ export const userTracker = {
   getUserId() {
     let userId = localStorage.getItem('analytics_user_id');
     if (!userId) {
-      userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      userId = `user_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
       localStorage.setItem('analytics_user_id', userId);
     }
     return userId;
@@ -356,14 +362,18 @@ export const initAnalytics = () => {
   errorTracker.init();
   
   // Track initial page view
-  userTracker.trackPageView(window.location.pathname, document.title);
+  if (typeof window !== 'undefined') {
+    userTracker.trackPageView(window.location.pathname, document.title);
+  }
   
   // Set up route change tracking for SPAs
-  const originalPushState = window.history.pushState;
-  window.history.pushState = function(...args) {
-    originalPushState.apply(window.history, args);
-    userTracker.trackPageView(window.location.pathname, document.title);
-  };
+  if (typeof window !== 'undefined' && window.history) {
+    const originalPushState = window.history.pushState;
+    window.history.pushState = function(...args) {
+      originalPushState.apply(window.history, args);
+      userTracker.trackPageView(window.location.pathname, document.title);
+    };
+  }
   
   console.log('Analytics initialized');
 };

@@ -41,11 +41,11 @@ const Cart = ({ onClose }) => {
     };
 
     document.addEventListener('keydown', handleEscape);
-    document.body.style.overflow = 'hidden';
+    //document.body.style.overflow = 'hidden';
 
     return () => {
       document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
+      //document.body.style.overflow = 'unset';
     };
   }, [onClose]);
 

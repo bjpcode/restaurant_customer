@@ -1,0 +1,144 @@
+/* Mobile scrolling fixes for deployment */
+
+/* iOS Safari scroll fixes */
+html {
+  height: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+body {
+  height: 100%;
+  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Fix for mobile viewport units */
+.min-h-screen {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+/* Ensure all scrollable containers work */
+.scrollable,
+.overflow-auto,
+.overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+}
+
+/* Fix for iOS momentum scrolling */
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent horizontal scroll on mobile */
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Fix for touch events */
+.touch-action-manipulation {
+  touch-action: manipulation;
+}
+
+/* Smooth scrolling for better UX */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Fix sticky positioning on mobile */
+.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+}
+
+/* Container scroll fixes */
+.container-scroll {
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile-specific scroll container */
+.mobile-scroll-container {
+  position: relative;
+  height: 100vh;
+  height: -webkit-fill-available;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Fix for menu content scrolling */
+.menu-content {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  height: calc(100vh - 120px); /* Account for header */
+  height: calc(-webkit-fill-available - 120px);
+}
+
+/* Prevent zoom on input focus (iOS) */
+input, select, textarea {
+  font-size: 16px;
+  transform: scale(1);
+}
+
+/* Fix for modal scrolling */
+.modal-content {
+  max-height: 90vh;
+  max-height: calc(-webkit-fill-available * 0.9);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Cart panel scroll fix */
+.cart-panel {
+  height: 100vh;
+  height: -webkit-fill-available;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Animation performance fixes */
+.will-change-scroll {
+  will-change: scroll-position;
+}
+
+/* Prevent overscroll behavior */
+.prevent-overscroll {
+  overscroll-behavior: contain;
+}
+
+/* Mobile Safari address bar fix */
+@supports (-webkit-touch-callout: none) {
+  .mobile-height-fix {
+    height: -webkit-fill-available;
+  }
+}
+
+/* Scroll snap for smooth navigation */
+.scroll-snap-y {
+  scroll-snap-type: y mandatory;
+}
+
+.scroll-snap-start {
+  scroll-snap-align: start;
+}
+
+/* Performance optimizations for scrolling */
+.scroll-optimized {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: scroll-position;
+}
+
+/* Fix for rubber band scrolling on iOS */
+.no-bounce {
+  overscroll-behavior-y: none;
+}
+
+/* Ensure content is accessible above mobile browser UI */
+.safe-bottom {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 20px);
+}

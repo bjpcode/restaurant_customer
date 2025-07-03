@@ -29,30 +29,25 @@ export const throttle = (func, limit) => {
   };
 };
 
-// Lazy loading hook for images
-export const useLazyLoading = (ref, threshold = 0.1) => {
-  const [isLoaded, setIsLoaded] = React.useState(false);
-  const [isInView, setIsInView] = React.useState(false);
-
-  React.useEffect(() => {
+// Lazy loading utility (not a hook - use in components)
+export const createLazyLoader = (threshold = 0.1) => {
+  return (element, callback) => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setIsInView(true);
+          callback(true);
           observer.disconnect();
         }
       },
       { threshold }
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    if (element) {
+      observer.observe(element);
     }
 
     return () => observer.disconnect();
-  }, [ref, threshold]);
-
-  return { isLoaded, setIsLoaded, isInView };
+  };
 };
 
 // Memoization helper for expensive calculations
@@ -104,13 +99,7 @@ export const preloadImage = (src) => {
 };
 
 // Bundle splitting helpers
-export const lazyImport = (importFunc) => {
-  return React.lazy(() => 
-    importFunc().catch(() => ({
-      default: () => <div>Error loading component</div>
-    }))
-  );
-};
+// Use React.lazy directly in components instead of this utility
 
 // Performance monitoring
 export const measurePerformance = (name, fn) => {

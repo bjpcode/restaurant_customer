@@ -446,6 +446,12 @@ export const backgroundSync = {
 
 // Initialize offline functionality
 export const initOfflineSupport = async () => {
+  // Only initialize in browser environment
+  if (typeof window === 'undefined') {
+    console.log('Offline support skipped - not in browser');
+    return false;
+  }
+
   try {
     // Initialize storage
     await offlineStorage.init();
@@ -466,7 +472,7 @@ export const initOfflineSupport = async () => {
     console.log('Offline support initialized');
     return true;
   } catch (error) {
-    console.error('Failed to initialize offline support:', error);
+    console.warn('Failed to initialize offline support:', error);
     return false;
   }
 };

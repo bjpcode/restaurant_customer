@@ -298,5 +298,80 @@ body {
   background: var(--text-light);
 }
 
-/* Import responsive styles */
-@import './styles/responsive.css';
+/* Mobile scrolling optimization */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+body {
+  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
+}
+
+/* Fix for iOS Safari scrolling issues */
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ensure scrollable containers work properly */
+.scrollable {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+}
+
+/* Fix for mobile viewport height issues */
+.min-h-screen {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+/* Mobile-specific scroll fixes */
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen {
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Mobile fixes imported directly instead of @import for better compatibility */
+
+/* Container scroll fixes */
+.container-scroll {
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile-specific scroll container */
+.mobile-scroll-container {
+  position: relative;
+  height: 100vh;
+  height: -webkit-fill-available;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Fix for menu content scrolling */
+.menu-content {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  height: calc(100vh - 120px); /* Account for header */
+  height: calc(-webkit-fill-available - 120px);
+}
+
+/* Animation performance fixes */
+.scroll-optimized {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: scroll-position;
+}
+
+/* Fix for rubber band scrolling on iOS */
+.no-bounce {
+  overscroll-behavior-y: none;
+}
+
+/* Ensure content is accessible above mobile browser UI */
+.safe-bottom {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 20px);
+}

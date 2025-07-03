@@ -8,12 +8,22 @@ import offline from './utils/offline';
 // Performance monitoring (optional)
 const reportWebVitals = (onPerfEntry) => {
   if (onPerfEntry && onPerfEntry instanceof Function) {
-    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
-      getCLS(onPerfEntry);
-      getFID(onPerfEntry);
-      getFCP(onPerfEntry);
-      getLCP(onPerfEntry);
-      getTTFB(onPerfEntry);
+    import('web-vitals').then((webVitals) => {
+      // Use the correct function names from web-vitals v3+
+      if (webVitals.onCLS) webVitals.onCLS(onPerfEntry);
+      if (webVitals.onFID) webVitals.onFID(onPerfEntry);
+      if (webVitals.onFCP) webVitals.onFCP(onPerfEntry);
+      if (webVitals.onLCP) webVitals.onLCP(onPerfEntry);
+      if (webVitals.onTTFB) webVitals.onTTFB(onPerfEntry);
+      
+      // Fallback for older versions
+      if (webVitals.getCLS) webVitals.getCLS(onPerfEntry);
+      if (webVitals.getFID) webVitals.getFID(onPerfEntry);
+      if (webVitals.getFCP) webVitals.getFCP(onPerfEntry);
+      if (webVitals.getLCP) webVitals.getLCP(onPerfEntry);
+      if (webVitals.getTTFB) webVitals.getTTFB(onPerfEntry);
+    }).catch((error) => {
+      console.warn('Web Vitals loading failed:', error);
     });
   }
 };
@@ -56,8 +66,17 @@ root.render(
 registerSW();
 
 // Initialize analytics and offline support
-analytics.init();
-offline.init();
+try {
+  analytics.init();
+} catch (error) {
+  console.warn('Analytics initialization failed:', error);
+}
+
+try {
+  offline.init();
+} catch (error) {
+  console.warn('Offline initialization failed:', error);
+}
 
 // Start performance monitoring
 reportWebVitals(console.log);
